@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RESQ OMAN — Emergency Command Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div id="screen-login">
+  <div class="login-bg-grid"></div>
+  <div class="login-card glass card-pad" style="padding:34px 30px;">
+    <div class="flex items-center justify-between" style="margin-bottom:26px;">
+      <div class="flex items-center gap-2">
+        <div class="brand-mark">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+        </div>
+        <div>
+          <div class="font-display" style="font-size:18px; font-weight:700;">RESQ <span style="color:var(--orange)">OMAN</span></div>
+          <div style="font-size:11px; color:var(--text-2);" data-i18n="login_tag">Emergency Command Center</div>
+        </div>
+      </div>
+      <button class="icon-btn" onclick="toggleLang()" title="EN / عربي">
+        <span id="lang-btn-label" class="font-mono" style="font-size:11px; font-weight:700;">AR</span>
+      </button>
+    </div>
+
+    <div style="font-size:13px; color:var(--text-1); margin-bottom:10px;" data-i18n="login_select_role">Sign in as</div>
+    <div class="grid" style="grid-template-columns:repeat(5,1fr); gap:6px; margin-bottom:20px;" id="role-chips">
+      <!-- filled by JS -->
+    </div>
+
+    <div class="flex flex-col gap-3">
+      <div>
+        <label style="font-size:12px; color:var(--text-1); display:block; margin-bottom:6px;" data-i18n="login_email">Email</label>
+        <input class="input-field" type="email" value="commander@resq.om" data-i18n-ph="login_email_ph">
+      </div>
+      <div>
+        <label style="font-size:12px; color:var(--text-1); display:block; margin-bottom:6px;" data-i18n="login_password">Password</label>
+        <input class="input-field" type="password" value="••••••••••">
+      </div>
+      <div class="flex justify-between items-center" style="font-size:12px; margin-top:-4px;">
+        <label class="flex items-center gap-1" style="color:var(--text-1); cursor:pointer;">
+          <input type="checkbox" checked style="accent-color:var(--orange);"> <span data-i18n="login_remember">Remember me</span>
+        </label>
+        <a href="#" style="color:var(--teal); text-decoration:none;" data-i18n="login_forgot">Forgot password?</a>
+      </div>
+      <button class="btn-primary" style="margin-top:6px;" onclick="doLogin()" data-i18n="login_btn">Sign In to Command Center</button>
+      <div style="text-align:center; font-size:12px; color:var(--text-2); margin-top:4px;" data-i18n="login_note">Demo access — no real backend connected yet</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ APP SHELL ============ -->
+<div id="screen-app">
+  <div class="shell">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-mark" style="width:38px;height:38px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+        </div>
+        <div>
+          <div class="font-display" style="font-size:15px; font-weight:700;">RESQ <span style="color:var(--orange)">OMAN</span></div>
+          <div style="font-size:10px; color:var(--text-2);" id="role-label-side">Commander</div>
+        </div>
+      </div>
+      <nav id="nav-list" class="flex flex-col gap-1"></nav>
+      <div style="flex:1;"></div>
+      <div class="nav-sep"></div>
+      <div class="nav-item" onclick="logout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        <span data-i18n="nav_logout">Sign out</span>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="topbar">
+        <div class="flex items-center gap-3">
+          <button class="icon-btn" style="display:none;" id="hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          <div id="page-title" class="font-display" style="font-size:16px; font-weight:700;">Dashboard</div>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="chip" id="clock-chip"><span class="dot" style="background:var(--teal);"></span><span class="font-mono" id="clock-text">--:--</span></div>
+          <div class="chip"><span class="dot" style="background:var(--amber);"></span><span data-i18n="topbar_weather">Muscat 34°C</span></div>
+          <button class="icon-btn" onclick="toggleLang()"><span id="lang-btn-label-2" class="font-mono" style="font-size:11px;font-weight:700;">AR</span></button>
+          <button class="icon-btn" onclick="goPage('alerts')">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+            <span style="position:absolute; top:4px; right:4px; width:8px; height:8px; border-radius:50%; background:var(--red); border:2px solid var(--bg-1);"></span>
+          </button>
+        </div>
+      </div>
+      <div class="content" id="content"></div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-root"></div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
